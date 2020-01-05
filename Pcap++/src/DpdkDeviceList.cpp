@@ -236,17 +236,24 @@ bool DpdkDeviceList::verifyHugePagesAndDpdkDriver()
 		return false;
 	}
 
+	bool nodriver = true;
 	execResult = executeShellCommand("lsmod | grep -s igb_uio");
 	if (execResult == "")
 	{
-		LOG_ERROR("igb_uio driver isn't loaded, DPDK cannot be initialized. Please run <PcapPlusPlus_Root>/setup_dpdk.sh");
-		return false;
-
+		execResult = executeShellCommand("lsmod | grep -s vfio_pci");
+		if (execResult == "") {
+			LOG_ERROR("igb_uio/vfio_pci drivers not loaded, DPDK cannot be initialized. Please run <PcapPlusPlus_Root>/setup_dpdk.sh");
+		} else {
+			nodriver = false;
+			LOG_DEBUG("vfio_pci driver loaded");
+		}
 	}
-	else
-		LOG_DEBUG("igb_uio driver is loaded");
+	else {
+		nodriver = false;
+		LOG_DEBUG("igb_uio driver loaded");
+	}
 
-	return true;
+	return !nodriver;
 }
 
 SystemCore DpdkDeviceList::getDpdkMasterCore() const
