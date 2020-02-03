@@ -66,7 +66,7 @@ const uint32_t initDpdkArgc = 7;
 const uint32_t maxArgLen = 20;
 char** initDpdkArgv;
 
-bool DpdkDeviceList::initDpdk(CoreMask coreMask, uint32_t mBufPoolSizePerDevice, uint8_t masterCore)
+bool DpdkDeviceList::initDpdk(CoreMask coreMask, uint32_t mBufPoolSizePerDevice, uint8_t masterCore, std::string args)
 {
 	if (m_IsDpdkInitialized)
 	{
@@ -95,12 +95,16 @@ bool DpdkDeviceList::initDpdk(CoreMask coreMask, uint32_t mBufPoolSizePerDevice,
 
 	std::stringstream dpdkParamsStream;
 	dpdkParamsStream << "pcapplusplusapp ";
-	dpdkParamsStream << "-n ";
-	dpdkParamsStream << "2 ";
-	dpdkParamsStream << "-c ";
-	dpdkParamsStream << "0x" << std::hex << std::setw(2) << std::setfill('0') << coreMask << " ";
-	dpdkParamsStream << "--master-lcore ";
-	dpdkParamsStream << (int)masterCore;
+	if (args.size() == 0) {
+		dpdkParamsStream << "-n ";
+		dpdkParamsStream << "2 ";
+		dpdkParamsStream << "-c ";
+		dpdkParamsStream << "0x" << std::hex << std::setw(2) << std::setfill('0') << coreMask << " ";
+		dpdkParamsStream << "--master-lcore ";
+		dpdkParamsStream << (int)masterCore;
+	} else {
+		dpdkParamsStream << args;
+	}
 
 	std::string dpdkParamsArray[initDpdkArgc];
 	initDpdkArgv = new char*[initDpdkArgc];
