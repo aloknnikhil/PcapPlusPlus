@@ -57,6 +57,14 @@ Clone the git repository:
 git clone https://github.com/seladb/PcapPlusPlus.git
 ```
 
+Quick build/install:
+```shell
+./configure-linux.sh --dpdk --dpdk-home $HOME/dpdk
+LDFLAGS='-mavx' make -j8
+sudo make install
+pkg-config --libs PcapPlusPlus
+```
+
 Follow the build instructions according to your platform in the [Build From Source](https://pcapplusplus.github.io/docs/install#build-from-source) page in PcapPlusPlus web-site.
 
 ## Feature Overview
